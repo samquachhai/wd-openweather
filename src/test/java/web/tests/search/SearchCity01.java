@@ -38,7 +38,7 @@ public class SearchCity01 extends TestBase {
 	 * @param cityName the city name
 	 */
 	@Test(dataProvider = "city",
-			groups = { "smoke"})
+			groups = { "smoke", "crossbrowser" })
 	public void searchCity01(String cityId, String cityName) throws Exception {
 		
 		HomePage homePage = new HomePage();
