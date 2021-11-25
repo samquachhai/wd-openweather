@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All" parallel="classes" thread-count="2">
+	
+	<parameter name="browsers" value="firefox" />  		<!-- firefox , chrome -->		
+	<parameter name="mode" value="headless" />  			<!-- headed , headless -->
+	<parameter name="testsuite" value="All" /> 						
+	
+	<test name="ALL">
+		<classes>
+			<class name="web.tests.search.SearchCity_01" />
+			<class name="web.tests.search.SearchCity_02" /> 
+
+		</classes>
+	</test>
+
+</suite>

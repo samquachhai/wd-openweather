@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="SearchCity_All" >
+  	<suite-files>
+        <suite-file path="SearchCity_01.xml" />
+        <suite-file path="SearchCity_02.xml" />
+    </suite-files>
+</suite> <!-- Suite -->
+
+
