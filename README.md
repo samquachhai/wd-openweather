@@ -85,7 +85,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                git branch: 'main', url: 'https://samquachhai@github.com/samquachhai/wd-openweather.git'
+                git branch: 'main', url: 'https://github.com/samquachhai/wd-openweather.git'
     
                 bat label: 'Run mvn clean', script: 'mvn clean'
     
