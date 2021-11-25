@@ -16,11 +16,12 @@ import web.utils.JsonReader;
  * The test to verify searching weather with invalid city name
  * 
  */
-public class SearchCity_02 extends TestBase {
+public class SearchCity02 extends TestBase {
 	
-	// Constructor
-	public SearchCity_02() {}
-	
+	/**
+	 * Data provider for test
+	 * 
+	 */
 	@DataProvider(name="invalid")
 	public Object[][] passData() throws IOException, ParseException
 	{
@@ -28,12 +29,18 @@ public class SearchCity_02 extends TestBase {
 
 	}
 	
+	/**
+	 * The test to verify searching weather with invalid city name
+	 * 
+	 * @param cityId the city id
+	 * @param cityName the city name
+	 */
 	@Test(dataProvider = "invalid",
-			groups = { "crossbrowser" })
-	public void searchCity_02(String id, String city) throws Exception {
+			groups = { "smoke", "crossbrowser" })
+	public void searchCity02(String cityId, String cityName) throws Exception {
 		
-		HomePage homePage = new HomePage();
-		SearchActions searchActions = new SearchActions();
+		final HomePage homePage = new HomePage();
+		final SearchActions searchActions = new SearchActions();
 		
 		try {
 			// Pre-Condition: Open https://openweather.org page
@@ -50,7 +57,7 @@ public class SearchCity_02 extends TestBase {
 			// 1. Searching for an invalid city (E.g. Invalid City)
 			Logger.logInfo("1. Searching for an invalid city (E.g. Invalid City)");
 			
-			searchActions.searchCity(city);
+			searchActions.searchCity(cityName);
 			
 			// Verify inline message "Not found. ..." displayed
 			Logger.assertExtentContains(
@@ -58,7 +65,7 @@ public class SearchCity_02 extends TestBase {
 					"Not found.");
 			
 			// Verify search notification "No results for ..." displayed
-			String expected = "No results for " + city;
+			String expected = "No results for " + cityName;
 			Logger.assertExtentEquals(
 					homePage.getSearchNotification(), 
 					expected);

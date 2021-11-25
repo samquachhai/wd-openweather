@@ -9,29 +9,28 @@ import web.pages.HomePage;
 public class SearchActions {
 
 	/**
-   	 * This method is intended to navigate to Home page, open Language Settings, select prefer language and save changes
-     * 
+   	 * Constructor
+   	 * 
+   	 */
+	public SearchActions() {
+		
+	}
+	
+	/**
+   	 * This method is intended to navigate to Home page, 
+   	 * 
    	 */
 	public void searchPreparation() {
 		navigateToHomePage();
 		
 	}
-	
-	/**
-   	 * This method is intended to select prefer language and save changes
-     * 
-   	 */
-	public void selectAndSavePreferLanguage(String languageCountryCode){
-    	
-    	
-    }
-	
+		
 	/**
    	 * This method is intended to navigate to Home page
      * 
    	 */
 	public void navigateToHomePage(){
-        HomePage homePage = new HomePage();
+        final HomePage homePage = new HomePage();
         homePage.navigateToHomePage();      
     }
 
@@ -42,8 +41,8 @@ public class SearchActions {
 	 * @param cityName city to search for (E.g. Ha Noi)
 	 * 
 	 */
-    public void searchCity(String cityName) {
-    	HomePage homePage = new HomePage();
+    public void searchCity(final String cityName) {
+    	final HomePage homePage = new HomePage();
     	homePage.searchCity(cityName);
     }
 	

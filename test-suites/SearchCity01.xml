@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="SearchCity_02" >
-  	<parameter name="browsers" value="firefox" />  		<!-- firefox , chrome -->		
+<suite name="SearchCity01" >
+  	<parameter name="browsers" value="chrome" />  		<!-- firefox , chrome -->		
 	<parameter name="mode" value="headless" />  			<!-- headed , headless -->
-	<parameter name="testsuite" value="SearchCity_02" />
+	<parameter name="testsuite" value="SearchCity01" />
   	
-  	<test name="SearchCity_02">
+  	<test name="SearchCity_01">
 		<classes>
-      		<class name="web.tests.search.SearchCity_02" /> 
-
+      		<class name="web.tests.search.SearchCity01" />
+	
     	</classes>
   	</test> <!-- Test -->
 </suite> <!-- Suite -->
+
+

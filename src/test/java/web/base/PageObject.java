@@ -31,6 +31,9 @@ import web.utils.WebDrivers;
  */
 public class PageObject {
 
+	public PageObject() {
+		
+	}
 	//==================== Click methods ===========================
 	
 	/**
@@ -791,13 +794,13 @@ public class PageObject {
    /**
 	 * This method is intended to navigate to a given URL in current browser
 	 * 
-	 * @param URL the URL to load
+	 * @param url the URL to load
 	 */
-	public void navigateToURL(String URL) {
+	public void navigateToURL(String url) {
         try {
-            WebDrivers.getCurrentWebDriver().navigate().to(URL);
+            WebDrivers.getCurrentWebDriver().navigate().to(url);
         } catch (Exception e) {
-            throw new TestException("URL did not load");
+            
         }
     }
 
@@ -809,8 +812,7 @@ public class PageObject {
         try {
             WebDrivers.getCurrentWebDriver().navigate().back();
         } catch (Exception e) {
-            System.out.println("FAILURE: Could not navigate back to previous page.");
-            throw new TestException("Could not navigate back to previous page.");
+            
         }
     }
 

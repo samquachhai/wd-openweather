@@ -33,19 +33,16 @@ import web.utils.Constants;
  */
 public class TestBase {
 	private WebDrivers webDrivers;
-	protected String browsers = "chrome";
-	protected String mode = "headless";
+	private String browsers;
+	private String mode;
 	
-	public static String URL = Constants.URL;
-	public static String ENVIRONMENT = Constants.ENVIRONMENT;	
-	public static String BUILD = Constants.BUILD;	
-	String reportFile = "";
+	public static final String URL = Constants.URL;
+	public static final String ENVIRONMENT = "";	
+	public static final String BUILD = "";		
 	
-	static InetAddress inetAddress = null;
-	public static String testsuiteName = "";
-	protected String testCaseName = this.getClass().getName();
-	protected String testClass = testCaseName;
-	protected String testSuiteFileName = "";
+	private String testsuiteName = "";
+	private String hostName = "localhost";
+	private String hostAddress = "localhost";
 	
 	public static final String TEST_OUTPUT_DIR = System.getProperty("user.dir")	+ "/";
 
@@ -55,11 +52,12 @@ public class TestBase {
 	 */	
 	@Parameters({ "browsers", "mode", "testsuite"})
 	@BeforeSuite(alwaysRun=true)
-	public void beforeSuite(@Optional("firefox") String browsers,
-							@Optional("headless") String mode,
-							@Optional("DEBUG") String testsuite) {
-		String directoryName = TEST_OUTPUT_DIR + "extent-report/";
-		File directory = new File(directoryName);
+	public void beforeSuite(@Optional("firefox") final String browsers,
+							@Optional("headless") final String mode,
+							@Optional("DEBUG") final String testsuite) {
+		final String directoryName = TEST_OUTPUT_DIR + "extent-report/";
+		final File directory = new File(directoryName);
+		
 	    if (! directory.exists()){
 	    	// Create new directory if not exist
 	        directory.mkdirs();
@@ -67,7 +65,7 @@ public class TestBase {
 	    }
 
 	    // Build test report file from suite name, browser name and running mode
-		reportFile = Paths.get(directoryName 
+		final String reportFile = Paths.get(directoryName 
 				+ testsuite 
 				+ "_"
 				+ browsers
@@ -82,20 +80,21 @@ public class TestBase {
 		// Create ExtendReport instance
 		ExtentReporter.createReporter(reportFile, browsers, URL);
 				
-		testsuiteName = testsuite;
+		this.testsuiteName = testsuite;
 	}
 
 	/**
-	 * This method is intended to setup WebDriver , browser and running mode for each test run
+	 * This method is intended to setup WebDriver , browser 
+	 * and running mode for each test run
 	 * 
 	 */
 	@Parameters({"browsers","mode"})
 	@BeforeClass(alwaysRun=true)
-	public void classSetUp(@Optional("chrome") String browsers, 
-						   @Optional("headed") String mode) {
+	public void classSetUp(@Optional("chrome") final String browsers, 
+						   @Optional("headed") final String mode) {
 		this.browsers = browsers;
 		this.mode = mode;
-		webDrivers = new WebDrivers();
+		this.webDrivers = new WebDrivers();
 		
 	}
 	
@@ -104,11 +103,15 @@ public class TestBase {
 	 * 
 	 */
 	@BeforeMethod(alwaysRun=true)
-	public synchronized void methodSetup(Method caller) throws MalformedURLException {
-		// Create an ExtentTest instance and add to current thread-local
-		ExtentReporter.getTestReporter().startTest(getTestName(caller));
-		// Create a WebDriver instance and add to current thread-local
-		webDrivers.startTest(this.browsers, this.mode);
+	public void methodSetup(final Method caller) throws MalformedURLException {
+		
+		synchronized(this) {
+			// Create an ExtentTest instance and add to current thread-local
+			ExtentReporter.getTestReporter().startTest(getTestName(caller));
+			
+			// Create a WebDriver instance and add to current thread-local
+			webDrivers.startTest(this.browsers, this.mode);
+		}
 	}
 
 	/**
@@ -117,36 +120,38 @@ public class TestBase {
 	 * 
 	 */ 
 	@AfterClass(alwaysRun=true)
-	public synchronized void afterClass() {
-		ExtentReporter.currentSparkReporter().config()
-				.setJs("$(document).ready(function() {"
-						+ "var list = $('#test-view-charts').find('.block.text-small');\n"
-						+ "var left_list_0 = list[0];\n"
-						+ "var left_list_1 = list[1];\n"
-						+ "var list_span_0 = $(left_list_0).find('span');\n"
-						+ "var span_value_1 = parseInt($(list_span_0[0]).text());\n"
-						+ "var list_span_1 = $(left_list_1).find('span');\n"
-						+ "var span_value_2 = parseInt($(list_span_1[0]).text());\n"
-						+ "var span_value_3 = parseInt($(list_span_1[1]).text());\n"
-						+ "var total = span_value_1 + span_value_2 +span_value_3;\n"
-						+ "$($('.block.text-small')[0]).prepend('<span>'+total+' Total test(s) in "
-						+ ENVIRONMENT 
-						+ ", " 
-						+ testsuiteName
-						+ "</span></br>');\n"
-						+ "$('.test-desc').prepend('<b><div>"
-						+ BUILD 
-						+ "</div></b>');\n});");
-		ExtentReporter.currentExtent()
-				.attachReporter(ExtentReporter.currentSparkReporter());
+	public void afterClass() {
+		synchronized(this) {
+			ExtentReporter.currentSparkReporter().config()
+					.setJs("$(document).ready(function() {"
+							+ "var list = $('#test-view-charts').find('.block.text-small');\n"
+							+ "var left_list_0 = list[0];\n"
+							+ "var left_list_1 = list[1];\n"
+							+ "var list_span_0 = $(left_list_0).find('span');\n"
+							+ "var span_value_1 = parseInt($(list_span_0[0]).text());\n"
+							+ "var list_span_1 = $(left_list_1).find('span');\n"
+							+ "var span_value_2 = parseInt($(list_span_1[0]).text());\n"
+							+ "var span_value_3 = parseInt($(list_span_1[1]).text());\n"
+							+ "var total = span_value_1 + span_value_2 +span_value_3;\n"
+							+ "$($('.block.text-small')[0]).prepend('<span>'+total+' Total test(s) in "
+							+ ENVIRONMENT 
+							+ ", " 
+							+ testsuiteName
+							+ "</span></br>');\n"
+							+ "$('.test-desc').prepend('<b><div>"
+							+ BUILD 
+							+ "</div></b>');\n});");
+			ExtentReporter.currentExtent()
+					.attachReporter(ExtentReporter.currentSparkReporter());
+		}
 	}
 
 	/**
-	 * This method is intended to write test information from the started reported to the HTML file
-	 * after suite run
+	 * This method is intended to write test information from the started reported 
+	 * to the HTML file after suite run
 	 */ 
 	@AfterSuite(alwaysRun=true)
-	protected void afterSuite() throws Exception {
+	protected void afterSuite() {
 		ExtentReporter.closeReport();
 		
 	}
@@ -156,13 +161,14 @@ public class TestBase {
 	 * 
 	 * @return the host name
 	 */ 
-	public static String getHostName() {
+	public String getHostName() {
 		try {
-			inetAddress = InetAddress.getLocalHost();
-			return inetAddress.getHostName();
+			this.hostName = InetAddress.getLocalHost().getHostName();
+			
 		} catch (UnknownHostException e) {
-			return "LocalHost";
+			
 		}
+		return this.hostName;
 	}
 
 	/**
@@ -170,28 +176,38 @@ public class TestBase {
 	 * 
 	 * @return the IP address
 	 */ 
-	public static String getIPAddress() {
+	public String getIPAddress() {
 		try {
-			inetAddress = InetAddress.getLocalHost();
-			return inetAddress.getHostAddress();
+			this.hostAddress = InetAddress.getLocalHost().getHostAddress();
+			
 		} catch (UnknownHostException e) {
-			return "Local Host";
+			
 		}
+		return this.hostAddress;
 	}
 
+	/**
+	 * This method is intended to get the running Test Class name
+	 * 
+	 * @return the test Class name  
+	 */
+	private String getClassName() {
+		return this.getClass().getName();
+	}
+	
 	/**
 	 * This method is intended to build Test name from running Test Class name
 	 * 
 	 * @return the name of the test  
 	 */
 	private String getTestName(Method caller) {
-		Test testAnnotation = caller.getAnnotation(Test.class);
+		final Test testAnnotation = caller.getAnnotation(Test.class);
 		if (testAnnotation != null) {
 			if (!testAnnotation.testName().isEmpty()) {
 				return testAnnotation.testName();
 			}
 		}
-		return testCaseName;
+		return getClassName();
 	}
 
 	/**
@@ -200,8 +216,8 @@ public class TestBase {
 	 * @return the current date 
 	 */ 
 	public String getCurrentDate() {
-		 Date date = new Date();
-		 SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+		 final Date date = new Date();
+		 final SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
 	     return formatter.format(date);
 	}
 	
@@ -213,9 +229,7 @@ public class TestBase {
 		try {
 			webDrivers.endTest();
 		} catch (Exception e) {
-			// e.printStackTrace();
-			System.out.println("Error occurred while closing browser."
-					+ e.getStackTrace());
+			
 		}
 	}
 }

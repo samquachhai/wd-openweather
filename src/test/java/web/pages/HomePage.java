@@ -13,20 +13,6 @@ import web.utils.Logger;
 
 public class HomePage extends PageObject {
 
-	public static int timer = 10;
-	
-	
-    //String searchCityField = ".search-container > input";
-    //String searchButton = ".search > button";
-    //String searchResults = ".search-dropdown-menu";
-    //String searchInlineMessage = ".search-block > .sub";
-    //String searchNotification = ".widget-notification > span";
-    //String currentCityName = ".current-container > :nth-child(1) > h2";
-    //String currentDate = ".current-container > :nth-child(1) > .orange-text";
-    //String currentTemperature = ".heading";
-    //String searchFieldOnDesktopMenu = "//div[@id='desktop-menu']/form[@role='search']/input[starts-with(@placeholder,'Weather')]"
-	//String searchFieldOnMobileMenu = = "//div[@id='mobile-menu']/form[@role='search']/input[starts-with(@placeholder,'Weather')]"
-	
 	// Page elements locators
 	public By searchCityField = By.xpath("//input[@placeholder='Search city' and @type='text']");
 	public By searchButton = By.xpath("//button[text() = 'Search']");
@@ -36,12 +22,14 @@ public class HomePage extends PageObject {
 	public By currentCityName = By.xpath("//div[contains(@class,'current-container')]/descendant::span[@class='orange-text']/following-sibling::h2");
 	public By currentTemperature = By.cssSelector("div.current-temp > span");
 	public By searchInlineMessage = By.xpath("//div[@class='search-block']/div[contains(@class,'sub not-found')]");	
-	public By searchNotification = By.xpath("//div[contains(@class,'current-container')]/div[contains(@class,'widget-notification')]/span");
+	final By searchNotification = By.xpath("//div[contains(@class,'current-container')]/div[contains(@class,'widget-notification')]/span");
 
-    // Constructor
-    public HomePage() {}
-    
-    /**
+	// Constructor
+	public HomePage() {
+		super();
+	}
+	
+   /**
    	 * This method is intended to navigate to Home page
      * 
    	 */

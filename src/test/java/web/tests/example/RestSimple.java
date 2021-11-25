@@ -8,8 +8,12 @@ import io.restassured.specification.RequestSpecification;
 
 public class RestSimple {
 	
+	/**
+	 * Simple RestAssured test
+	 * 
+	 */
 	//@Test
-	public void GetQueryParameter() {
+	public void restSimple() {
 		//https://openweathermap.org/data/2.5/find?q=Vung%20Tau&appid=439d4b804bc8187953eb36d2a8c26a02&units=metric
 		
 		// REST base url
@@ -24,9 +28,12 @@ public class RestSimple {
 				.queryParam("units", "metric")
 				.get("/find");
 		
-		String jsonString = response.asString();
-		System.out.println(jsonString);
-		Assert.assertTrue(jsonString.contains("Vung Tau"), "Json string contains 'Vung Tau'");
+		
+		// Check response cotains city name
+		String jsonResponse = response.asString();
+		boolean check =  jsonResponse.contains("Vung Tau");
+		
+		Assert.assertTrue(check, "Json string contains 'Vung Tau'");
 	}
 
 }

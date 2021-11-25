@@ -18,11 +18,12 @@ import web.utils.DateTime;
  * The test to verify searching weather with valid city name
  * 
  */
-public class SearchCity_01 extends TestBase {
+public class SearchCity01 extends TestBase {
 	
-	// Constructor
-	public SearchCity_01() {}
-	
+	/**
+	 * Data provider for test
+	 * 
+	 */
 	@DataProvider(name="city")
 	public Object[][] passData() throws IOException, ParseException
 	{
@@ -30,9 +31,15 @@ public class SearchCity_01 extends TestBase {
 
 	}
 	
+	/**
+	 * The test to verify searching weather with invalid city name
+	 * 
+	 * @param cityId the city id
+	 * @param cityName the city name
+	 */
 	@Test(dataProvider = "city",
 			groups = { "smoke"})
-	public void searchCity_01(String id, String city) throws Exception {
+	public void searchCity01(String cityId, String cityName) throws Exception {
 		
 		HomePage homePage = new HomePage();
 		SearchActions searchActions = new SearchActions();
@@ -50,26 +57,26 @@ public class SearchCity_01 extends TestBase {
 					"  Search button is displayed");
 			
 			// 1. Searching for a city of your choice (E.g. Ha Noi)
-			Logger.logInfo("1. Searching weather for '" + city + "'");
+			Logger.logInfo("1. Searching weather for '" + cityName + "'");
 			
-			searchActions.searchCity(city);
+			searchActions.searchCity(cityName);
 			
 			// Verify list result contain (E.g. Ha Noi)
 			Logger.assertExtentContainsWithScreenshot(
 					homePage.getFirstItemOfSearchResults(), 
-					city);
+					cityName);
 			
 			// 2. Click on the link in result list
 			Logger.logInfo("2. Click on the link in result list");
 			
 			homePage.clickFirstItemOfSearchResults();
-			homePage.waitUntilTextDisplay(homePage.currentCityName, city);
+			homePage.waitUntilTextDisplay(homePage.currentCityName, cityName);
 			
 			// Get current url in running browser
 			String currentURL = homePage.getCurrentURL();
 			
 			// Verify current url update containing search city id
-			Logger.assertExtentContains(currentURL, id);					
+			Logger.assertExtentContains(currentURL, cityId);					
 						
 			// 3. Verify the current date (E.g. Jun 9), city name and the weather display correct. 
 			// (Note: Only validate the temperature display regardless its number)
@@ -98,7 +105,7 @@ public class SearchCity_01 extends TestBase {
 			// Verify the current city name display correct
 			Logger.assertExtentContains(
 					currentCityName, 
-					city);
+					cityName);
 			
 			// Get current temperature displays on home page
 			String currentTemperature = homePage.getCurrentTemparature();

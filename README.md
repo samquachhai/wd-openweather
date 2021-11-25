@@ -63,9 +63,9 @@ mvn clean
 mvn test-compile
 ```
 
-- Run test with given suite name under folder test-suites (e.g. SearchCity_01.xml) 
+- Run test with given suite name under folder test-suites (e.g. SearchCity01.xml) 
 ```javascript
-mvn test -DsuiteXmlFile=SearchCity_01.xml
+mvn test -DsuiteXmlFile=SearchCity01.xml
 ```
 
 - The ExtentReports test report is generated under /extent-report directory. 
@@ -91,7 +91,7 @@ pipeline {
     
                 bat label: 'Run test-compile', script: 'mvn test-compile'
     
-                bat label: 'Run test', script: 'mvn test -DsuiteXmlFile=SearchCity_01.xml'
+                bat label: 'Run test', script: 'mvn test -DsuiteXmlFile=SearchCity01.xml'
             }
         }
     }
@@ -101,3 +101,5 @@ pipeline {
 - Build Now
 ![Build Now](./img/jenkins-pipeline.png)
 
+- PMD Code Analysis 
+![Code Analysis](./img/PMD-static-code-analysis.png)
