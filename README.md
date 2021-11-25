@@ -7,6 +7,7 @@
 * [Technologies Used](#technologies-used)
 * [Features](#features)
 * [Project Structure](#project-structure)
+* [PMD Code Analysis](#pmd-code-analysis)
 * [Setup](#setup)
 * [Usage](#usage)
 * [Continuous Integration](#continuous-integration)
@@ -34,6 +35,8 @@
 ## Project Structure
 ![Project structure](./img/project-structure.png)
 
+## PMD Code Analysis 
+![PMD Code Analysis](./img/PMD-static-code-analysis.png)
 
 ## Setup
 - Installing the JDK Software and Setting JAVA_HOME [here](https://docs.oracle.com/cd/E19182-01/821-0917/inst_jdk_javahome_t/index.html)
@@ -100,6 +103,3 @@ pipeline {
 
 - Build Now
 ![Build Now](./img/jenkins-pipeline.png)
-
-- PMD Code Analysis 
-![Code Analysis](./img/PMD-static-code-analysis.png)
