@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -114,6 +115,17 @@ public class TestBase {
 		}
 	}
 
+	
+	/**
+	 * This method is intended to end current test run
+	 * 
+	 */
+	@AfterMethod(alwaysRun=true)
+	public void tearDown() {
+		// end test run
+		webDrivers.endTest();
+	}
+	
 	/**
 	 * This method is intended to attach a ExtentReporter reporter, 
 	 * allowing it to access all started tests, nodes and logs

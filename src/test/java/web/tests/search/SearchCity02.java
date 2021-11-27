@@ -13,7 +13,7 @@ import web.utils.Logger;
 import web.utils.JsonReader;
 
 /**
- * The test to verify searching weather with invalid city name
+ * The test to verify searching weather with invalid city name and country code
  * 
  */
 public class SearchCity02 extends TestBase {
@@ -22,29 +22,30 @@ public class SearchCity02 extends TestBase {
 	 * Data provider for test
 	 * 
 	 */
-	@DataProvider(name="invalid")
+	@DataProvider(name="city")
 	public Object[][] passData() throws IOException, ParseException
 	{
-		return JsonReader.getData("src/test/resources/search-city.json", "invalid", 2);
+		return JsonReader.getData("src/test/resources/search-city-name-invalid.json", "city", 2);
 
 	}
 	
 	/**
-	 * The test to verify searching weather with invalid city name
+	 * The test to verify searching weather with invalid city name and country code
 	 * 
 	 * @param cityId the city id
 	 * @param cityName the city name
 	 */
-	@Test(dataProvider = "invalid",
-			groups = { "smoke", "crossbrowser" })
-	public void searchCity02(String cityId, String cityName) throws Exception {
+	@Test(dataProvider = "city",
+			groups = { "smoke", "crossbrowser" },
+			description = "Search weather with invalid city name and country code")
+	public void searchCity02(final String cityId, final String cityName) {
 		
 		final HomePage homePage = new HomePage();
 		final SearchActions searchActions = new SearchActions();
 		
 		try {
-			// Pre-Condition: Open https://openweather.org page
-			Logger.logInfo("Pre-Condition: Open https://openweather.org page");
+			// Pre-Condition: Open https://openweathermap.org
+			Logger.logInfo("Pre-Condition: Open https://openweathermap.org");
 			
 			searchActions.searchPreparation();
 			
@@ -65,7 +66,7 @@ public class SearchCity02 extends TestBase {
 					"Not found.");
 			
 			// Verify search notification "No results for ..." displayed
-			String expected = "No results for " + cityName;
+			final String expected = "No results for " + cityName;
 			Logger.assertExtentEquals(
 					homePage.getSearchNotification(), 
 					expected);
@@ -76,8 +77,6 @@ public class SearchCity02 extends TestBase {
 			
 		} catch (Exception ex) {
 			Logger.logExceptionFail(ex.getMessage());
-		} finally {
-			closeBrowser();
-		}
+		} 
 	}
 }

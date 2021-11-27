@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 import org.json.simple.parser.ParseException;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -11,15 +12,15 @@ import web.actions.SearchActions;
 import web.base.TestBase;
 import web.pages.HomePage;
 import web.utils.Logger;
-import web.utils.JsonReader;
+import web.utils.Constants;
 import web.utils.DateTime;
+import web.utils.JsonReader;
 
 /**
- * The test to verify searching weather with valid city name 
- * and country code on Home page
+ * The test to verify searching weather with invalid city location id
  * 
  */
-public class SearchCity01 extends TestBase {
+public class SearchCity04 extends TestBase {
 	
 	/**
 	 * Data provider for test
@@ -28,28 +29,27 @@ public class SearchCity01 extends TestBase {
 	@DataProvider(name="city")
 	public Object[][] passData() throws IOException, ParseException
 	{
-		return JsonReader.getData("src/test/resources/search-city-name.json", "city", 2);
+		return JsonReader.getData("src/test/resources/search-city-id-invalid.json", "city", 2);
 
 	}
 	
 	/**
-	 * The test to verify searching weather with valid city name 
-	 * and country code on Home page
+	 * The test to verify searching weather with invalid city location id
 	 * 
 	 * @param cityId the city id
 	 * @param cityName the city name
 	 */
 	@Test(dataProvider = "city",
 			groups = { "smoke", "crossbrowser" },
-			description = "Search weather with an valid city name and country code on Home page")
-	public void searchCity01(final String cityId, final String cityName) {
+			description = "Search weather with invalid city location id")
+	public void searchCity04(final String cityId, final String cityName) {
 		
 		final HomePage homePage = new HomePage();
 		final SearchActions searchActions = new SearchActions();
 		
 		try {
-			// Pre-Condition: Open https://openweathermap.org
-			Logger.logInfo("Pre-Condition: Open https://openweathermap.org");
+			// Pre-Condition: Open https://openweather.org page
+			Logger.logInfo("Pre-Condition: Open https://openweather.org page");
 			
 			searchActions.searchPreparation();
 			
@@ -59,31 +59,22 @@ public class SearchCity01 extends TestBase {
 					"Search", 
 					"  Search button is displayed");
 			
-			// 1. Searching for a city of your choice (E.g. Ha Noi)
-			Logger.logInfo("1. Searching weather for '" + cityName + "'");
+			// 1. User navigate to the city location via url
+			Logger.logInfo("1. User navigate to the city location via url");
+			final String locationUrl = Constants.URL + "/city/" + cityId;
 			
-			searchActions.searchCity(cityName);
+			homePage.navigateToUrl(locationUrl);
 			
-			// Verify list result contain (E.g. Ha Noi)
-			Logger.assertExtentContainsWithScreenshot(
-					homePage.getCityNameOfSearchResults(), 
-					cityName);
-			
-			// 2. Click on the link in result list
-			Logger.logInfo("2. Click on the link in result list");
-			
-			homePage.clickCityNameOfSearchResults();
-			
-			// Get current url in running browser
-			final String currentUrl = homePage.getCurrentUrl();
-			
-			// Verify current url update containing search city id
-			Logger.assertExtentContains(currentUrl, cityId);					
+			// Verify search notification "Couldn't load data for city id ..." displayed
+			final String expected = "Couldn't load data for city id " + cityId;
+			Logger.assertExtentEquals(
+					homePage.getSearchNotification(), 
+					expected);
 						
-			// 3. Verify the current date (E.g. Jun 9), city name 
+			// 2. Verify the current date (E.g. Jun 9), city name 
 			// and the weather display correct. 
 			// (Note: Only validate the temperature display regardless its number)
-			Logger.logInfo("3. Verify the current date, city name and the weather display correct.");
+			Logger.logInfo("2. Verify the current date, city name and the weather display correct.");
 			
 			// Get current date displays on home page
 			final String currentDate = homePage.getCurrentDate();
@@ -103,12 +94,13 @@ public class SearchCity01 extends TestBase {
 					expectedDate);
 			
 			// Get current city name displays on home page
+			String defaultCityName = "London, GB";
 			final String currentCityName = homePage.getCurrentCityName();
 			
 			// Verify the current city name display correct
 			Logger.assertExtentContains(
 					currentCityName, 
-					cityName);
+					defaultCityName);
 			
 			// Get current temperature displays on home page
 			final String currentTemperature = homePage.getCurrentTemparature();
@@ -123,8 +115,6 @@ public class SearchCity01 extends TestBase {
 			
 		} catch (Exception ex) {
 			Logger.logExceptionFail(ex.getMessage());
-			
 		} 
 	}
-	
 }

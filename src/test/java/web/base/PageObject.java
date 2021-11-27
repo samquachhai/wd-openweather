@@ -1,8 +1,3 @@
-/*
- * PageOject class
- *
- */
-
 package web.base;
 
 import java.util.ArrayList;
@@ -13,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -30,7 +26,10 @@ import web.utils.WebDrivers;
  * 
  */
 public class PageObject {
-
+	
+	/**
+	 * Constructor
+	 */
 	public PageObject() {
 		
 	}
@@ -43,18 +42,19 @@ public class PageObject {
 	 * 
 	 */
 	
-	public void click(By locator) {
+	public void click(final By locator) {
 		try {
 			// Wait for web element to be clickable
 			waitUntilClickable(locator);
 			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = getElement(locator);
 			
 			// Click on element
 			element.click();
+		} catch (NoSuchElementException e) {
 			
-		} catch (Exception e) {
+		} catch (StaleElementReferenceException e) {
 		
 			clickJScript(locator);
 		}
@@ -66,31 +66,15 @@ public class PageObject {
 	 * @param locator used to find the element 
 	 * 
 	 */
-	public void clickJScript(By locator) {
+	public void clickJScript(final By locator) {
 		try {
-			
-			JavascriptExecutor executor = (JavascriptExecutor) WebDrivers.getCurrentWebDriver();
-			executor.executeScript("arguments[0].click();", 
-					WebDrivers.getCurrentWebDriver().findElement(locator));
-
-		} catch (Exception e) {
-			
-		}
-	}
-
-	/**
-	 * This method is intended to click on WebElement using Jscript
-	 *
-	 * @param element the element to click on 
-	 * 
-	 */
-	public void clickJScript(WebElement element) {
-		try {
-			
-			JavascriptExecutor executor = (JavascriptExecutor) WebDrivers.getCurrentWebDriver();
+			// Find element
+			final WebElement element = getElement(locator);
+						
+			final JavascriptExecutor executor = (JavascriptExecutor) WebDrivers.getCurrentWebDriver();
 			executor.executeScript("arguments[0].click();", element);
 
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 			
 		}
 	}
@@ -102,19 +86,19 @@ public class PageObject {
 	 * 
 	 */
 	
-	public void clickUsingActions(By locator) {
+	public void clickUsingActions(final By locator) {
 		try {
 			// Wait for web element to be clickable
 			waitUntilClickable(locator);
 			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
-						
+			final WebElement element = getElement(locator);
+			
 			// Click on element using Actions
 			Actions actions = new Actions(WebDrivers.getCurrentWebDriver());
 			actions.moveToElement(element).click().perform();
 			
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 		
 		}
 	}
@@ -125,22 +109,23 @@ public class PageObject {
 	 * @param locator used to find the element 
 	 * 
 	 */
-	public void scrollToThenClick(By locator) {
+	public void scrollToThenClick(final By locator) {
 		
 		try {
 			// Wait for web element to be clickable
 			waitUntilClickable(locator);
 			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = getElement(locator);
 			
-			((JavascriptExecutor) WebDrivers.getCurrentWebDriver()).executeScript("arguments[0].scrollIntoView(true);", element);
+			final JavascriptExecutor executor = (JavascriptExecutor) WebDrivers.getCurrentWebDriver();
+			executor.executeScript("arguments[0].scrollIntoView(true);", element);
             
 			// Click on element using Actions
-			Actions actions = new Actions(WebDrivers.getCurrentWebDriver());
+			final Actions actions = new Actions(WebDrivers.getCurrentWebDriver());
 			actions.moveToElement(element).click().perform();
 			
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 			
 		}
         
@@ -156,44 +141,47 @@ public class PageObject {
 	 * 
 	 */
 	
-	public void setText(By locator, CharSequence... keysToSend)  {
+	public void setText(final By locator, final CharSequence... keysToSend)  {
 		
 		try {
 			// Wait for web element to be clickable
 			waitUntilClickable(locator);
 			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = getElement(locator);
 			
+			// Clear and send keys to element
 			element.clear();
 			element.sendKeys(keysToSend);
 			
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 			
 		}
 	}
 	
 	/**
-	 * This method is intended to enter text to the active Web Element using Mouse Actions
+	 * This method is intended to enter text to the active Web Element 
+	 * using Mouse Actions
 	 *
 	 * @param locator used to find the element 
 	 * @param keysToSend character sequence to send to the element
 	 * 
 	 */
-	public void setTextUsingActions(By locator, CharSequence... keysToSend) {
+	public void setTextUsingActions(final By locator, final CharSequence... keysToSend) {
 		try {
 			// Wait for web element to be clickable
 			waitUntilClickable(locator);
 			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = getElement(locator);
 			
+			// Clear and send keys to element
 			element.clear();
-			Actions actions = new Actions(WebDrivers.getCurrentWebDriver());
+			final Actions actions = new Actions(WebDrivers.getCurrentWebDriver());
 			actions.moveToElement(element).click().perform();
 			actions.moveToElement(element).sendKeys(keysToSend).perform();
 			
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 			
 		}
 	}
@@ -205,19 +193,19 @@ public class PageObject {
 	 * @param text the text to send to the element
 	 * 
 	 */
-    public void sendKeysAsHuman(By locator, String text) {
+    public void sendKeysAsHuman(final By locator, final String text) {
     	
     	try {
 			// Wait for web element to be clickable
 			waitUntilClickable(locator);
 			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
 			
-	    	Random r = new Random();
+	    	Random random = new Random();
 		    for(int i = 0; i < text.length(); i++) {
 		        try {
-		            Thread.sleep((int)(r.nextGaussian() * 15 + 100));
+		            Thread.sleep((int)(random.nextGaussian() * 15 + 100));
 		        } catch(InterruptedException e) {
 		        	
 		        }
@@ -225,7 +213,7 @@ public class PageObject {
 		        String s = new StringBuilder().append(text.charAt(i)).toString();
 		        element.sendKeys(s);
 		    }
-    	}catch (Exception e) {
+    	}catch (NoSuchElementException e) {
     		
     	}
 	}
@@ -237,19 +225,19 @@ public class PageObject {
 	 * @param text the text to send to the element
 	 * 
 	 */
-    public void sendKeys(By locator, String value) {
+    public void sendKeys(final By locator, final String value) {
               
     	try {
 			// Wait for web element to be clickable
 			waitUntilClickable(locator);
 			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = getElement(locator);
 			
         	element.clear();
             element.sendKeys(value);
-        } catch (Exception e) {
-            throw new TestException(String.format("Error in sending [%s] to the following element: [%s]", value, locator.toString()));
+        } catch (NoSuchElementException e) {
+            
         }
     }
  
@@ -259,16 +247,16 @@ public class PageObject {
 	 * @param locator used to find the element 
 	 * 
 	 */
-	public void clearText(By locator) {
+	public void clearText(final By locator) {
 		try {
 			// Wait for web element to be clickable
 			waitUntilClickable(locator);
 			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = getElement(locator);
 			
             element.clear();
-        } catch (Exception e) {
+        } catch (NoSuchElementException e) {
             
         }
     }
@@ -282,21 +270,21 @@ public class PageObject {
 	 * @param index the option at this index will be selected
 	 * 
 	 */
-	public void selectByIndex(By locator, int index) {
+	public void selectByIndex(final By locator, final int index) {
 		try {
 			// Wait for web element to be clickable
 			waitUntilVisible(locator);
 			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = getElement(locator);
 			
 			// Create object of the Select class
-			Select se = new Select(element);
+			final Select select = new Select(element);
 						
 			// Select the option by index
-			se.selectByIndex(index);
+			select.selectByIndex(index);
 			
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 		
 		}
 		
@@ -309,21 +297,18 @@ public class PageObject {
 	 * @param index the option at this index will be selected
 	 * 
 	 */
-	public void selectOptionsByIndex(By locator, int index) {
+	public void selectOptionsByIndex(final By locator, final int index) {
 		try {
-			// Wait for web element to be clickable
-			waitUntilVisible(locator);
-			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = getElement(locator);
 			
 			// Create object of the Select class
-			Select se = new Select(element);
+			final Select select = new Select(element);
 						
 			// Select the option by index
-			se.selectByIndex(index);
+			select.selectByIndex(index);
 			
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 		
 		}
 		
@@ -336,21 +321,22 @@ public class PageObject {
 	 * @param value the value option to match against
 	 * 
 	 */
-	public void selectByValue(By locator, String value) {
-		// Wait for web element to be clickable
-		waitUntilClickable(locator);
+	public void selectByValue(final By locator, final String value) {
 		
 		try {
+			// Wait for web element to be clickable
+			waitUntilClickable(locator);
+			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = getElement(locator);
 			
 			// Create object of the Select class
-			Select se = new Select(element);
+			final Select select = new Select(element);
 						
 			// Select the option with value
-			se.selectByValue(value);
+			select.selectByValue(value);
 			
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 			
 		}
 	}
@@ -362,16 +348,19 @@ public class PageObject {
 	 * @param value the value option to match against
 	 * 
 	 */
-	public void selectOptionsByValue(By locator, String value) {
+	public void selectOptionsByValue(final By locator, final String value) {
 		
 		try {
+			// Find element
+			final WebElement element = getElement(locator);
+						
 			// Create object of the Select class
-			Select se = new Select(getElement(locator));
+			final Select select = new Select(element);
 						
 			// Select the option with value
-			se.selectByValue(value);
+			select.selectByValue(value);
 			
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 			
 		}
 	}
@@ -383,21 +372,21 @@ public class PageObject {
 	 * @param text the visible text to match against
 	 * 
 	 */
-	public void selectByVisibleText(By locator, String text) {
+	public void selectByVisibleText(final By locator, final String text) {
 		try {
 			// Wait for web element to be visible
 			waitUntilVisible(locator);
 			
 			// Find element
-			WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			final WebElement element = getElement(locator);
 			
 			// Create object of the Select class
-			Select se = new Select(element);
+			final Select select = new Select(element);
 						
 			// Select the option using the visible text
-			se.selectByVisibleText(text);
+			select.selectByVisibleText(text);
 			
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 			
 		}
 	}
@@ -409,16 +398,19 @@ public class PageObject {
 	 * @param text the visible text to match against
 	 * 
 	 */
-	public void selectOptionsByText(By locator, String text) {
+	public void selectOptionsByText(final By locator, final String text) {
 		
 		try {
+			// Find element
+			final WebElement element = getElement(locator);
+						
 			// Create object of the Select class
-			Select se = new Select(getElement(locator));
+			final Select select = new Select(element);
 						
 			// Select the option using the visible text
-			se.selectByVisibleText(text);
+			select.selectByVisibleText(text);
 			
-		} catch (Exception e) {
+		} catch (NoSuchElementException e) {
 			
 		}
 	}
@@ -459,12 +451,12 @@ public class PageObject {
 	 * 
 	 * @return true if element presented , false if not presence 
 	 */
-	public boolean isElementPresent(By locator) {
+	public boolean isElementPresent(final By locator) {
 		try {
 			WebDrivers.getCurrentWebDriver().findElement(locator)
 					.getLocation();
 			return true;
-		} catch (org.openqa.selenium.NoSuchElementException e) {
+		} catch (NoSuchElementException e) {
 			return false;
 		}
 	}
@@ -478,23 +470,18 @@ public class PageObject {
 	 */
 	
 	public String getText(By locator) {	
-		
-		// Wait for web element to be visible
-		waitUntilVisible(locator);
-		WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
-		
-		// Get web element text or innerText
-		if(element != null) {
-			String text = "";
-			try {
-				text = element.getText();
-			} catch (Exception e) {
-				text = element.getAttribute("innerText");
-			}
-			return text;
+		try {
+			// Wait for web element to be visible
+			waitUntilVisible(locator);
+			
+			// Find element
+			final WebElement element = getElement(locator);
+						
+			return element.getText();
+		} catch(NoSuchElementException e) {
+			
+			return null;		
 		}
-		
-		return null;
 			
 	}
 	
@@ -510,7 +497,9 @@ public class PageObject {
 	public List<WebElement> getElements(By parentLocator, By childLocator) {
 		// Wait for parent web element to be visible
 		waitUntilVisible(parentLocator);
-		WebElement parent = WebDrivers.getCurrentWebDriver().findElement(parentLocator);
+		
+		// Find element
+		final WebElement parent = getElement(parentLocator);
 		
 		// Get get all elements within current context
 		return parent.findElements(childLocator);
@@ -592,13 +581,8 @@ public class PageObject {
 	 * @param locator used to find the element 
 	 * 
 	 */
-    public WebElement getElement(By locator) {
-        try {
-            return WebDrivers.getCurrentWebDriver().findElement(locator);
-        } catch (Exception e) {
-            
-        }
-        return null;
+    public WebElement getElement(final By locator) {
+       return WebDrivers.getCurrentWebDriver().findElement(locator);       
     }
 
     /**
@@ -607,15 +591,8 @@ public class PageObject {
 	 * @param locator used to find the element 
 	 * 
 	 */
-    public List<WebElement> getElements(By locator) {
-    	
-        try {
-        	waitForPresenceOfElementLocated(locator);
-        	
-            return WebDrivers.getCurrentWebDriver().findElements(locator);
-        } catch (Exception e) {
-            throw new NoSuchElementException(String.format("The following element did not display: [%s] ", locator.toString()));
-        }
+    public List<WebElement> getElements(final By locator) {
+    	return WebDrivers.getCurrentWebDriver().findElements(locator);
     }
 
     /**
@@ -796,7 +773,7 @@ public class PageObject {
 	 * 
 	 * @param url the URL to load
 	 */
-	public void navigateToURL(String url) {
+	public void navigateToUrl(String url) {
         try {
             WebDrivers.getCurrentWebDriver().navigate().to(url);
         } catch (Exception e) {
@@ -821,23 +798,15 @@ public class PageObject {
 	 * 
 	 */
     public String getPageTitle() {
-        try {
-            return WebDrivers.getCurrentWebDriver().getTitle();
-        } catch (Exception e) {
-            throw new TestException(String.format("Current page title is: %s", WebDrivers.getCurrentWebDriver().getTitle()));
-        }
+       return WebDrivers.getCurrentWebDriver().getTitle();
     }
 
     /**
 	 * This method is intended to get the current URL of current page
 	 * 
 	 */
-    public String getCurrentURL() {
-        try {
-            return WebDrivers.getCurrentWebDriver().getCurrentUrl();
-        } catch (Exception e) {
-            throw new TestException(String.format("Current URL is: %s", WebDrivers.getCurrentWebDriver().getCurrentUrl()));
-        }
+    public String getCurrentUrl() {
+        return WebDrivers.getCurrentWebDriver().getCurrentUrl();
     }
     
     /**

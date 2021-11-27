@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
@@ -203,7 +204,7 @@ public class WebDrivers {
 		WebDriverManager.chromedriver().setup();
 		driver = new ChromeDriver(options);
 		driver.manage().window().maximize();
-		
+		driver.manage().timeouts().implicitlyWait(Constants.WAIT_LOADING_TIMEOUT_SECONDS, TimeUnit.SECONDS);
 		return driver;
 	}
 
@@ -236,7 +237,7 @@ public class WebDrivers {
 		driver = new FirefoxDriver(options);
 		
 		driver.manage().window().maximize();
-
+		driver.manage().timeouts().implicitlyWait(Constants.WAIT_LOADING_TIMEOUT_SECONDS, TimeUnit.SECONDS);
 		return driver;
 	}
 	

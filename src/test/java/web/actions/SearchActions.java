@@ -38,12 +38,12 @@ public class SearchActions {
     /**
 	 * This method is intended to search weather for a city of your choice
 	 *
-	 * @param cityName city to search for (E.g. Ha Noi)
+	 * @param city the city to search for (E.g. 'Ha Noi', or 'Vung Tau, VN')
 	 * 
 	 */
-    public void searchCity(final String cityName) {
+    public void searchCity(final String city) {
     	final HomePage homePage = new HomePage();
-    	homePage.searchCity(cityName);
+    	homePage.searchCity(city);
     }
 	
 }
