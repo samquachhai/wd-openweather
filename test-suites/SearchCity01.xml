@@ -5,7 +5,7 @@
 	<parameter name="mode" value="headless" />  			<!-- headed , headless -->
 	<parameter name="testsuite" value="SearchCity01" />
   	
-  	<test name="SearchCity_01">
+  	<test name="SearchCity01">
 		<classes>
       		<class name="web.tests.search.SearchCity01" />
 	

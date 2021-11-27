@@ -10,7 +10,8 @@
 		<classes>
 			<class name="web.tests.search.SearchCity01" />
 			<class name="web.tests.search.SearchCity02" /> 
-
+			<class name="web.tests.search.SearchCity03" />
+			<class name="web.tests.search.SearchCity04" /> 
 		</classes>
 	</test>
 
