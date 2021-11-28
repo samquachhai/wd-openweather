@@ -182,6 +182,7 @@ public class WebDrivers {
 		options.addArguments("disable-infobars");
 		options.addArguments("--disable-dev-shm-usage");
 		options.addArguments("--no-sandbox");
+		options.addArguments("window-size=1920x1080");
 		
 		// Run incognito mode
 		if (mode.equalsIgnoreCase("incognito")) {
@@ -234,6 +235,8 @@ public class WebDrivers {
 			options.addArguments("--headless");
 			options.addArguments("--disable-gpu");
 		}
+		options.addArguments("window-size=1920x1080");
+		
 		driver = new FirefoxDriver(options);
 		
 		driver.manage().window().maximize();

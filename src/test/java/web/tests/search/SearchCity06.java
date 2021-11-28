@@ -9,14 +9,15 @@ import org.testng.annotations.Test;
 import web.actions.SearchActions;
 import web.base.TestBase;
 import web.pages.HomePage;
+import web.pages.SearchResults;
 import web.utils.Logger;
 import web.utils.JsonReader;
 
 /**
  * The test to verify searching weather with invalid city name and country code
- * 
+ * from Search Bar in Home page
  */
-public class SearchCity02 extends TestBase {
+public class SearchCity06 extends TestBase {
 	
 	/**
 	 * Data provider for test
@@ -31,16 +32,18 @@ public class SearchCity02 extends TestBase {
 	
 	/**
 	 * The test to verify searching weather with invalid city name and country code
+	 * from Search Bar in Home page
 	 * 
 	 * @param cityId the city id
 	 * @param cityName the city name
 	 */
 	@Test(dataProvider = "city",
 			groups = { "smoke", "crossbrowser" },
-			description = "Search weather with invalid city name and country code")
-	public void searchCity02(final String cityId, final String cityName) {
+			description = "Search weather with invalid city name and country code from Search Bar in Home page")
+	public void searchCity06(final String cityId, final String cityName) {
 		
 		final HomePage homePage = new HomePage();
+		final SearchResults searchResults = new SearchResults();
 		final SearchActions searchActions = new SearchActions();
 		
 		try {
@@ -49,28 +52,26 @@ public class SearchCity02 extends TestBase {
 			
 			searchActions.searchPreparation();
 			
-			// Verify Home page displays by checking Search button is displayed 
+			// Verify Home page displays  
 			Logger.assertExtentEquals(
 					homePage.getSearchButtonText(), 
 					"Search", 
-					"  Search button is displayed");
+					"  Home page is not displayed");
 			
 			// 1. Searching for an invalid city (E.g. Invalid City)
 			Logger.logInfo("1. Searching for an invalid city (E.g. Invalid City)");
 			
-			searchActions.searchCity(cityName);
+			searchActions.searchCityFromTopBar(cityName);
 			
-			// Verify inline message "Not found. ..." displayed
-			Logger.assertExtentContains(
-					homePage.getSearchInlineMessage(), 
-					"Not found");
-			
-			// Verify search notification "No results for ..." displayed
-			final String expected = "No results for " + cityName;
+			// Verify the Weather in your city page displays 
 			Logger.assertExtentEquals(
-					homePage.getSearchNotification(), 
-					expected);
-			
+					searchResults.getSearchBoxText(), 
+					cityName);
+						
+			// Verify search notification "Not found" displayed
+			Logger.assertExtentContains(
+					searchResults.getResultNotification(), 
+					"Not found");
 
 			// Capture screenshot at last step
 			Logger.logInfoWithScreenshot("");

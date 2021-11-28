@@ -3,7 +3,6 @@ package web.pages;
 import org.openqa.selenium.By;
 
 import web.base.PageObject;
-import web.utils.Constants;
 import web.utils.Logger;
 
 /*
@@ -20,7 +19,7 @@ public class SearchResults extends PageObject {
 	final By resultSearchButton = By.xpath("//*[@id='searchform']/button");
 	final By resultForecastList = By.xpath("//div[@id='forecast_list_ul']");
 	final By resultForecast = By.xpath("//div[@id='forecast_list_ul']/descendant::p[1]");
-	final By resultCity = By.xpath("/div[@id='forecast_list_ul']/descendant::a[1]");
+	final By resultCity = By.xpath("//div[@id='forecast_list_ul']/descendant::a[1]");
 	final By resultTemperature = By.xpath("//div[@id='forecast_list_ul']//span");
 	final By resultGeoCoords = By.xpath("//div[@id='forecast_list_ul']/descendant::a[2]");	
 	final By resultNotification = By.xpath("//div[@id='forecast_list_ul']/div");
@@ -40,7 +39,7 @@ public class SearchResults extends PageObject {
     public void searchCity(final String city) {
         // Searching for a city of your choice (E.g. Ha Noi)
     	enterSearchCityName(city);
-    	clickSearchButton();
+    	this.clickSearchButton();
     }
 
     /**
@@ -52,7 +51,7 @@ public class SearchResults extends PageObject {
 	 */
     public void enterSearchCityName(final String city) {
     	Logger.logInfo("Enter '" + city + "' in the Search city field on 'Weather in your city' page");
-    	setText(resultSearchBox, city); 
+    	this.setText(resultSearchBox, city); 
     }
     
     /**
@@ -60,8 +59,8 @@ public class SearchResults extends PageObject {
      *   on Weather in your city page 
    	 */
     public void clickSearchButton() {  	
-		Logger.logInfo("Click Search button on Home page");
-		click(resultSearchButton);      
+		Logger.logInfo("Click Search button");
+		this.click(resultSearchButton);      
 		this.waitUntilPageLoad();
     }
     
@@ -69,10 +68,11 @@ public class SearchResults extends PageObject {
    	 * This method is intended to click City of search results 
      *   on Weather in your city page
    	 */
-    public void clickResultCity() {
+    public void clickSearchResultCity() {
     	Logger.logInfo("Click city name on search results");
-    	click(resultCity);
-    	this.waitUntilJsLoad();
+    	this.click(resultCity);
+    	// Wait for loading icon visible and then invisible
+    	this.waitUntilVisibleThenInvisible(By.xpath("//*[contains(@class,'owm-loader')]//svg"), 3);
     }
     
     /**
@@ -80,15 +80,15 @@ public class SearchResults extends PageObject {
    	 *   on Weather in your city page
    	 */
     public String getSearchBoxText() {
-    	return getText(resultSearchBox);
+    	return this.getValue(resultSearchBox);
     }
     
     /**
    	 * This method is intended to get City of search results 
    	 *   on Weather in your city page
    	 */
-    public String getResultCity() {
-    	return getText(resultCity);
+    public String getSearchResultCity() {
+    	return this.getText(resultCity);
     } 
 
     /**
@@ -96,7 +96,7 @@ public class SearchResults extends PageObject {
    	 *   on Weather in your city page
    	 */
     public String getResultTemperature() {
-        return getText(resultTemperature);
+        return this.getText(resultTemperature);
     }
 
     /**
@@ -105,7 +105,7 @@ public class SearchResults extends PageObject {
      * 
    	 */
     public String getResultGeoCoords() {
-    	return getText(resultGeoCoords);
+    	return this.getText(resultGeoCoords);
     }
 
     /**
@@ -114,8 +114,16 @@ public class SearchResults extends PageObject {
      * 
    	 */
     public String getResultNotification() {
-    	return getText(resultNotification);
+    	return this.getText(resultNotification);
     }
 
+    /**
+   	 * This method is intended to get current url
+   	 *   on Weather in your city page
+     * 
+   	 */
+    public String getSearchResultUrl() {
+    	return this.getCurrentUrl();
+    }
 }
 

@@ -14,7 +14,7 @@ import web.utils.Logger;
 public class HomePage extends PageObject {
 
 	// Page elements locators
-	final By searchCityField = By.xpath("//input[@placeholder='Search city' and @type='text']");
+	final By searchCityField = By.xpath("//*[@id='weather-widget']//div[@class='search']//input");
 	final By searchButton = By.xpath("//*[@id='weather-widget']//div[@class='search']//button");
 	final By resultsList = By.xpath("//div[@class='search-container']/ul[contains(@class,'search-dropdown-menu')]");
 	final By resultsCityName = By.xpath("//div[@class='search-container']/ul[contains(@class,'search-dropdown-menu')]/li");
@@ -36,7 +36,7 @@ public class HomePage extends PageObject {
     public void navigateToHomePage() {
         navigateToUrl(Constants.URL);
         waitUntilPageLoad();
-        
+        waitLoadingIconVisibleThenInvisible();
     }
     
     /**
@@ -48,11 +48,11 @@ public class HomePage extends PageObject {
     public void searchCity(final String city) {
         // Searching for a city of your choice (E.g. Ha Noi)
     	enterSearchCityName(city);
-    	//clickSearchButton();
-    	this.getElement(searchCityField).sendKeys(Keys.ENTER);
-    	waitUntilPageLoad();
+    	clickSearchButton();
+    	//this.getElement(searchCityField).sendKeys(Keys.ENTER);
+    	//waitLoadingIconVisibleThenInvisible();
     }
-
+    
     /**
 	 * This method is intended to enter city name 
 	 * in the Search city field on Home page
@@ -71,9 +71,7 @@ public class HomePage extends PageObject {
    	 */
     public void clickSearchButton() {  	
 		Logger.logInfo("Click Search button on Home page");
-		this.waitUntilVisible(searchButton);
-		click(searchButton);      
-		this.waitUntilPageLoad();
+		this.click(searchButton); 
     }
     
     /**
@@ -84,8 +82,8 @@ public class HomePage extends PageObject {
     public void clickCityNameOfSearchResults() {
  
     	Logger.logInfo("Click City name on search results");
-    	click(resultsCityName);
-    	this.waitUntilPageLoad();
+    	this.click(resultsCityName);
+    	waitLoadingIconVisibleThenInvisible();
     }
     
     /**
@@ -94,7 +92,7 @@ public class HomePage extends PageObject {
      * 
    	 */
     public String getSearchButtonText() {
-    	return getText(searchButton);
+    	return this.getText(searchButton);
     }
     
     /**
@@ -103,7 +101,7 @@ public class HomePage extends PageObject {
      * 
    	 */
     public String getCityNameOfSearchResults() {
-    	return getText(resultsCityName);
+    	return this.getText(resultsCityName);
     } 
 
     /**
@@ -112,7 +110,7 @@ public class HomePage extends PageObject {
      * 
    	 */
     public String getCurrentCityName() {
-        return getText(currentCityName);
+        return this.getText(currentCityName);
     }
 
     /**
@@ -121,7 +119,7 @@ public class HomePage extends PageObject {
      * 
    	 */
     public String getCurrentTemparature() {
-    	return getText(currentTemperature);
+    	return this.getText(currentTemperature);
     }
 
     /**
@@ -130,7 +128,7 @@ public class HomePage extends PageObject {
      * 
    	 */
     public String getCurrentDate() {
-    	return getText(currentDate);
+    	return this.getText(currentDate);
     }
 
     /**
@@ -139,7 +137,7 @@ public class HomePage extends PageObject {
      * 
    	 */
     public String getSearchInlineMessage() {
-    	return getText(searchInlineMessage);
+    	return this.getText(searchInlineMessage);
     }
 
     /**
@@ -148,7 +146,19 @@ public class HomePage extends PageObject {
      * 
    	 */
     public String getSearchNotification() {
-    	return getText(searchNotification);
+    	return this.getText(searchNotification);
     }
+    
+    /**
+   	 * This method is intended to wait for loading icon visible 
+   	 * and then invisible on Home page
+     * 
+   	 */
+    public void waitLoadingIconVisibleThenInvisible() {
+    	// Wait for loading icon visible and then invisible
+    	this.waitUntilVisibleThenInvisible(By.xpath("//*[contains(@class,'owm-loader')]//svg"), 3);
+ 
+	}
+ 
 }
 

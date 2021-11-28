@@ -48,8 +48,8 @@ public class SearchCity04 extends TestBase {
 		final SearchActions searchActions = new SearchActions();
 		
 		try {
-			// Pre-Condition: Open https://openweather.org page
-			Logger.logInfo("Pre-Condition: Open https://openweather.org page");
+			// Pre-Condition: Open https://openweathermap.org page
+			Logger.logInfo("Pre-Condition: Open https://openweathermap.org");
 			
 			searchActions.searchPreparation();
 			

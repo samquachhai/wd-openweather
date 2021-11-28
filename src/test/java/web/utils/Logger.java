@@ -174,10 +174,10 @@ public final class Logger {
 		// Compare actual string equals expected string			
 		if (!(actual.toString().equals(expected.toString()))) {
 			logFail("Actual '" + actual.toString().trim() 
-					+ "' does not equal '" + expected.toString().trim() + "'");
+					+ "' does not equal '" + expected.toString().trim() + "' ");
 		} else {
 			logPass("Actual '" + actual.toString().trim() 
-					+ "' equals '" + expected.toString().trim() + "'");
+					+ "' equals '" + expected.toString().trim() + "' ");
 		}
 	}
 
@@ -192,10 +192,10 @@ public final class Logger {
 		// Compare actual string equals expected string	
 		if (!(actual.toString().equals(expected.toString()))) {
 			logFail("Actual '" + actual.toString().trim() 
-					+ "' does not equal '" + expected.toString().trim() + "'");
+					+ "' does not equal '" + expected.toString().trim() + "' ");
 		} else {
 			logPassWithScreenshot("Actual '" + actual.toString().trim() 
-					+ "' equals '" + expected.toString().trim() + "'");
+					+ "' equals '" + expected.toString().trim() + "' ");
 		}
 	}
 
@@ -215,7 +215,7 @@ public final class Logger {
 					+ message);
 		} else {
 			logPass("Actual '" + actual.toString().trim() 
-					+ "' equals '" + expected.toString().trim());
+					+ "' equals '" + expected.toString().trim() + "' ");
 		}
 	}
 
@@ -235,7 +235,7 @@ public final class Logger {
 					+ "' does not  equals '" + expected.toString().trim() + "' " + message);
 		} else {
 			logPassWithScreenshot("Actual '" + actual.toString().trim() 
-					+ "' equals '" + expected.toString().trim() + "'");
+					+ "' equals '" + expected.toString().trim() + "' ");
 		}
 	}
 	
@@ -273,7 +273,7 @@ public final class Logger {
 					+ "' still equals '" + expected.toString().trim() + "' ");
 		} else {
 			logPassWithScreenshot("Actual '" + actual.toString() 
-					+ "' does not equal '" + expected.toString() + "'");
+					+ "' does not equal '" + expected.toString() + "' ");
 		}
 	}
 	
@@ -314,7 +314,7 @@ public final class Logger {
 					+ message);
 		} else {
 			logPassWithScreenshot("Actual '" + actual.toString() 
-					+ "' does not equal '" + expected.toString() + "'");
+					+ "' does not equal '" + expected.toString() + "' ");
 		}
 	}
 

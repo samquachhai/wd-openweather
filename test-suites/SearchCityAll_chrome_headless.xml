@@ -12,6 +12,10 @@
 			<class name="web.tests.search.SearchCity02" /> 
 			<class name="web.tests.search.SearchCity03" />
 			<class name="web.tests.search.SearchCity04" /> 
+			<class name="web.tests.search.SearchCity05" />
+			<class name="web.tests.search.SearchCity06" /> 
+			<class name="web.tests.search.SearchCity07" />
+			<class name="web.tests.search.SearchCity08" /> 
 		</classes>
 	</test>
 

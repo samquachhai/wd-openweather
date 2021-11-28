@@ -1,22 +1,26 @@
 package web.base;
 
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.TestException;
 
 import web.utils.Constants;
 import web.utils.WebDrivers;
@@ -422,25 +426,25 @@ public class PageObject {
 	 * @param text the visible text to match against
 	 * 
 	 */
-	public void selectListItemContainsText(By locator, String text) {
-		
-		List<WebElement> elements = getElements(locator);
-
-        for (WebElement element : elements) {
-            if (element == null) {
-                throw new TestException("Some elements in the list do not exist");
-            }
-            if (element.isDisplayed()) {
-            	// Click on element using Actions
-    			Actions actions = new Actions(WebDrivers.getCurrentWebDriver());
-    			actions.moveToElement(element).click().perform();
-            	
-    			break;
-            }
-        }
-        
-	}
-    
+//	public void selectListItemContainsText(final By locator, final String text) {
+//		
+//		List<WebElement> elements = getElements(locator);
+//
+//        for (WebElement element : elements) {
+//            if (element == null) {
+//                
+//            }
+//            if (element.isDisplayed()) {
+//            	// Click on element using Actions
+//    			Actions actions = new Actions(WebDrivers.getCurrentWebDriver());
+//    			actions.moveToElement(element).click().perform();
+//            	
+//    			break;
+//            }
+//        }
+//        
+//	}
+//    
 	    
 	//==================== Get methods ===========================
 	
@@ -467,9 +471,8 @@ public class PageObject {
 	 * @param locator used to find the element 
 	 * 
 	 * @return The visible text of this element , null if element not visible 
-	 */
-	
-	public String getText(By locator) {	
+	 */	
+	public String getText(final By locator) {	
 		try {
 			// Wait for web element to be visible
 			waitUntilVisible(locator);
@@ -483,6 +486,31 @@ public class PageObject {
 			return null;		
 		}
 			
+	}
+	
+	/**
+	 * This method is intended to get the value of the given attribute of the element
+	 *
+	 * @param locator used to find the element 
+	 * @param attribute the name of attribute
+	 * 
+	 * @return The attribute current value or null if current value is not set 
+	 */
+	public String getAttribute(final By locator, final String attribute)
+	{
+		return getElement(locator).getAttribute(attribute);
+	}
+	
+	/**
+	 * This method is intended to get the value of the attribute 'value' of the element
+	 *
+	 * @param locator used to find the element
+	 * 
+	 * @return The attribute current value or null if current value is not set 
+	 */
+	public String getValue(final By locator)
+	{
+		return getElement(locator).getAttribute("value");
 	}
 	
 	/**
@@ -553,26 +581,26 @@ public class PageObject {
 	 */
 	public List<String> getDropdownValues(By locator) {
 
-    	// Wait for web element to be clickable
-    	waitUntilClickable(locator);
-    	
-    	WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
-    	
-        Select dropdown = new Select(element);
-        List<String> elementList = new ArrayList<String>();
-
-        List<WebElement> allValues = dropdown.getOptions();
-
-        if (allValues == null) {
-            throw new TestException("Some elements in the list do not exist");
-        }
-
-        for (WebElement value : allValues) {
-            if (value.isDisplayed()) {
-                elementList.add(value.getText().trim());
-            }
-        }
-        return elementList;
+		try {
+	    	// Wait for web element to be clickable
+	    	waitUntilClickable(locator);
+	    	
+	    	WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+	    	
+	        Select dropdown = new Select(element);
+	        List<String> elementList = new ArrayList<String>();
+	
+	        List<WebElement> optionValues = dropdown.getOptions();
+	
+	        for (WebElement value : optionValues) {
+	            if (value.isDisplayed()) {
+	                elementList.add(value.getText().trim());
+	            }
+	        }
+	        return elementList;
+		} catch (NoSuchElementException e) {
+			return Collections.emptyList();
+		}
     }
 	
 	/**
@@ -601,19 +629,19 @@ public class PageObject {
 	 * @param locator used to find the element 
 	 * 
 	 */
-    public List<String> getElementsText(By locator) {
-        List<String> elementList = new ArrayList<String>();
-        List<WebElement> elements = getElements(locator);
-
-        for (WebElement element : elements) {
-            if (element == null) {
-                throw new TestException("Some elements in the list do not exist");
-            }
-            
-            elementList.add(element.getText());
-            
-        }
-        return elementList;
+    public List<String> getElementsText(final By locator) {
+    	try {
+	        List<String> elementList = new ArrayList<String>();
+	        List<WebElement> elements = getElements(locator);
+	
+	        for (WebElement element : elements) {
+	            elementList.add(element.getText());	            
+	        }
+	        return elementList;
+	        
+    	} catch(NoSuchElementException e) {
+    		return Collections.emptyList();
+    	}
     }
 
 	//==================== Wait methods ===========================
@@ -624,9 +652,8 @@ public class PageObject {
 	 * 
 	 * @param locator used to find the element
 	 * 
-	 * @return the WebElement once it is visible
 	 */
-	public void waitUntilVisible(By locator) {
+	public void waitUntilVisible(final By locator) {
 		waitUntilVisible(locator, Constants.WAIT_LONG_SECONDS);
 		
 	}
@@ -638,15 +665,15 @@ public class PageObject {
 	 * @param locator used to find the element
 	 * @param timeOutInSeconds The timeout in seconds
 	 * 
-	 * @return the WebElement once it is visible
 	 */
-	public void waitUntilVisible(By locator, int timeOutInSeconds) {
+	public void waitUntilVisible(final By locator, final int timeOutInSeconds) {
 		
 		try {
-        	WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), Constants.WAIT_LONG_SECONDS);
+        	final WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
+        			timeOutInSeconds);
             wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-        } catch (Exception e) {
-            throw new NoSuchElementException(String.format("The following element was not visible: %s", locator));
+        } catch (NoSuchElementException e) {
+            
         }
 	}
 	
@@ -656,9 +683,8 @@ public class PageObject {
 	 *  
 	 * @param locator used to find the element
 	 * 
-	 * @return the WebElement once it is located and clickable (visible and enabled)
 	 */
-	public void waitUntilClickable(By locator) {
+	public void waitUntilClickable(final By locator) {
 		waitUntilClickable(locator, Constants.WAIT_LONG_SECONDS);
 		
 	}
@@ -670,14 +696,14 @@ public class PageObject {
 	 * @param locator used to find the element
 	 * @param timeOutInSeconds the timeout in seconds
 	 * 
-	 * @return the WebElement once it is located and clickable (visible and enabled)
 	 */
-	public void waitUntilClickable(By locator, int timeOutInSeconds) {
+	public void waitUntilClickable(final By locator, final int timeOutInSeconds) {
 		try {
-        	WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), Constants.WAIT_LONG_SECONDS);
+        	final WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
+        			Constants.WAIT_LONG_SECONDS);
             wait.until(ExpectedConditions.elementToBeClickable(locator));
-        } catch (Exception e) {
-            throw new NoSuchElementException(String.format("The following element was not clickable: %s", locator));
+        } catch (NoSuchElementException e) {
+            
         }
 	}
 	
@@ -688,7 +714,7 @@ public class PageObject {
 	 * @param text to be present in the element
 	 * 
 	 */
-	public void waitUntilTextDisplay(By locator, Object text) {
+	public void waitUntilTextDisplay(final By locator, final Object text) {
 		waitUntilTextDisplay(locator, text, Constants.WAIT_LONG_SECONDS);
 	}
 	
@@ -700,15 +726,16 @@ public class PageObject {
 	 * @param timeOutInSeconds the timeout in seconds
 	 * 
 	 */
-	public void waitUntilTextDisplay(By locator, Object text, int timeOutInSeconds) {
+	public void waitUntilTextDisplay(final By locator, final Object text, final int timeOutInSeconds) {
 		try {
 			
-			WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), timeOutInSeconds);
+			final WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
+					timeOutInSeconds);
 			wait.until(ExpectedConditions.textToBePresentInElement(
 					WebDrivers.getCurrentWebDriver().findElement(locator), text.toString()));
 			
-		} catch (Exception e) {
-			throw new NoSuchElementException(String.format("The following element was not visible: %s", locator));
+		} catch (NoSuchElementException e) {
+			
 		}
 	}
 	
@@ -757,15 +784,97 @@ public class PageObject {
 	 * This method is intended to wait for element present on DOM of current page
 	 * 
 	 */
-   public void waitForPresenceOfElementLocated(By selector) {
+	public void waitForPresence(final By selector) {
         try {
-        	WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), Constants.WAIT_LONG_SECONDS);
+        	final WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
+        			Constants.WAIT_LONG_SECONDS);
             wait.until(ExpectedConditions.presenceOfElementLocated(selector));
-        } catch (Exception e) {
-            throw new NoSuchElementException(String.format("The following element was not visible: %s", selector));
+        } catch (NoSuchElementException e) {
+            
         }
     }
 
+	/**
+	 * This method is intended to wait for a web element to be invisible
+	 * or not present on DOM in a specific timeout in seconds
+	 * 
+	 * @param locator used to find the element
+	 * @param timeOutInSeconds The timeout in seconds
+	 * 
+	 */
+	public void waitUntilInvisible(By locator, int timeOutInSeconds) {
+		
+		try {
+			final WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
+       			timeOutInSeconds);
+			wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+		} catch (NoSuchElementException e) {
+           
+		}
+	}
+	
+	/**
+	 * This method is intended to wait for a web element to be invisible
+	 * or not present on DOM in a specific timeout in seconds
+	 * 
+	 * @param locator used to find the element
+	 * 
+	 */
+	public void waitUntilInvisible(By locator) {
+		waitUntilInvisible(locator, Constants.WAIT_LONG_SECONDS);
+		
+	}
+	
+	/**
+	 * This method is intended to wait for a web element to be visible
+	 * and then invisible or not present on DOM in a specific timeout in seconds
+	 * 
+	 * @param locator used to find the element
+	 * @param timeOutInSeconds The timeout in seconds
+	 * 
+	 */
+	public void waitUntilVisibleThenInvisible(By locator, int timeOutInSeconds) {
+		
+		try {
+			
+			waitIgnoringException( 
+					ExpectedConditions.visibilityOfElementLocated((locator)),
+					timeOutInSeconds);
+
+            WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
+			if (element != null) {
+				WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), timeOutInSeconds);
+				wait.until(ExpectedConditions.invisibilityOf(element));
+			}
+		} catch (Exception e) {
+			
+		}
+
+	}
+	
+	private FluentWait<WebDriver> newFluentWait(int timedOutInSeconds) {
+        Duration timeout = Duration.ofSeconds(timedOutInSeconds);
+        Duration pollingInMillis = Duration.ofMillis(500);
+        return new FluentWait<>(WebDrivers.getCurrentWebDriver())
+                .withTimeout(timeout).pollingEvery(pollingInMillis)
+                .ignoring(NoSuchElementException.class)
+                .ignoring(TimeoutException.class);
+    }
+	
+	private WebElement waitIgnoringException(
+			Function<? super WebDriver, WebElement> expectedCondition, 
+			int timedOutInSeconds) {
+		FluentWait<WebDriver> fluentWait = newFluentWait(timedOutInSeconds);
+        WebElement element = null;
+		try {			
+			element = fluentWait.until(expectedCondition);
+		} catch (Exception e) {
+			
+		}
+		return element;	
+	}
+	
+	
    //==================== Browser methods ===========================
 
    /**
