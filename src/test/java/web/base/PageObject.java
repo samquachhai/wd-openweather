@@ -57,10 +57,12 @@ public class PageObject {
 			// Click on element
 			element.click();
 		} catch (NoSuchElementException e) {
-			
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		} catch (StaleElementReferenceException e) {
 		
-			clickJScript(locator);
+			throw new StaleElementReferenceException(String.format("The following element did not display: [%s] ", 
+					locator.toString()));
 		}
 	}
 	
@@ -79,7 +81,8 @@ public class PageObject {
 			executor.executeScript("arguments[0].click();", element);
 
 		} catch (NoSuchElementException e) {
-			
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
 	}
 	
@@ -103,7 +106,8 @@ public class PageObject {
 			actions.moveToElement(element).click().perform();
 			
 		} catch (NoSuchElementException e) {
-		
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
 	}
 	
@@ -130,7 +134,8 @@ public class PageObject {
 			actions.moveToElement(element).click().perform();
 			
 		} catch (NoSuchElementException e) {
-			
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
         
     }
@@ -159,7 +164,8 @@ public class PageObject {
 			element.sendKeys(keysToSend);
 			
 		} catch (NoSuchElementException e) {
-			
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
 	}
 	
@@ -186,7 +192,8 @@ public class PageObject {
 			actions.moveToElement(element).sendKeys(keysToSend).perform();
 			
 		} catch (NoSuchElementException e) {
-			
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
 	}
 	
@@ -218,7 +225,8 @@ public class PageObject {
 		        element.sendKeys(s);
 		    }
     	}catch (NoSuchElementException e) {
-    		
+    		throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
     	}
 	}
     
@@ -241,7 +249,8 @@ public class PageObject {
         	element.clear();
             element.sendKeys(value);
         } catch (NoSuchElementException e) {
-            
+        	throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
         }
     }
  
@@ -261,7 +270,8 @@ public class PageObject {
 			
             element.clear();
         } catch (NoSuchElementException e) {
-            
+        	throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
         }
     }
 	
@@ -289,7 +299,8 @@ public class PageObject {
 			select.selectByIndex(index);
 			
 		} catch (NoSuchElementException e) {
-		
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
 		
 	}
@@ -313,7 +324,8 @@ public class PageObject {
 			select.selectByIndex(index);
 			
 		} catch (NoSuchElementException e) {
-		
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
 		
 	}
@@ -341,7 +353,8 @@ public class PageObject {
 			select.selectByValue(value);
 			
 		} catch (NoSuchElementException e) {
-			
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
 	}
 	
@@ -365,7 +378,8 @@ public class PageObject {
 			select.selectByValue(value);
 			
 		} catch (NoSuchElementException e) {
-			
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
 	}
 	
@@ -391,7 +405,8 @@ public class PageObject {
 			select.selectByVisibleText(text);
 			
 		} catch (NoSuchElementException e) {
-			
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
 	}
 	
@@ -415,7 +430,8 @@ public class PageObject {
 			select.selectByVisibleText(text);
 			
 		} catch (NoSuchElementException e) {
-			
+			throw new NoSuchElementException(String.format("The following element did not display: [%s] ",
+					locator.toString()));
 		}
 	}
 
@@ -670,7 +686,7 @@ public class PageObject {
 		
 		try {
         	final WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
-        			timeOutInSeconds);
+        			Duration.ofSeconds(timeOutInSeconds));
             wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
         } catch (NoSuchElementException e) {
             
@@ -700,7 +716,7 @@ public class PageObject {
 	public void waitUntilClickable(final By locator, final int timeOutInSeconds) {
 		try {
         	final WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
-        			Constants.WAIT_LONG_SECONDS);
+        			Duration.ofSeconds(Constants.WAIT_LONG_SECONDS));
             wait.until(ExpectedConditions.elementToBeClickable(locator));
         } catch (NoSuchElementException e) {
             
@@ -730,7 +746,7 @@ public class PageObject {
 		try {
 			
 			final WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
-					timeOutInSeconds);
+					Duration.ofSeconds(timeOutInSeconds));
 			wait.until(ExpectedConditions.textToBePresentInElement(
 					WebDrivers.getCurrentWebDriver().findElement(locator), text.toString()));
 			
@@ -747,7 +763,7 @@ public class PageObject {
 	public void waitUntilPageLoad() {
 		try {
 			WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
-					Constants.WAIT_VERY_LONG_SECONDS);
+					Duration.ofSeconds(Constants.WAIT_VERY_LONG_SECONDS));
 			
 		    wait.until(new ExpectedCondition<Boolean>() {
 		        public Boolean apply(WebDriver wd) {
@@ -787,7 +803,7 @@ public class PageObject {
 	public void waitForPresence(final By selector) {
         try {
         	final WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
-        			Constants.WAIT_LONG_SECONDS);
+        			Duration.ofSeconds(Constants.WAIT_LONG_SECONDS));
             wait.until(ExpectedConditions.presenceOfElementLocated(selector));
         } catch (NoSuchElementException e) {
             
@@ -806,7 +822,7 @@ public class PageObject {
 		
 		try {
 			final WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), 
-       			timeOutInSeconds);
+       			Duration.ofSeconds(timeOutInSeconds));
 			wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
 		} catch (NoSuchElementException e) {
            
@@ -837,13 +853,13 @@ public class PageObject {
 		
 		try {
 			
-			waitIgnoringException( 
-					ExpectedConditions.visibilityOfElementLocated((locator)),
+			waitIgnoringException(ExpectedConditions.visibilityOfElementLocated(locator),
 					timeOutInSeconds);
 
             WebElement element = WebDrivers.getCurrentWebDriver().findElement(locator);
 			if (element != null) {
-				WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(), timeOutInSeconds);
+				WebDriverWait wait = new WebDriverWait(WebDrivers.getCurrentWebDriver(),
+						Duration.ofSeconds(timeOutInSeconds));
 				wait.until(ExpectedConditions.invisibilityOf(element));
 			}
 		} catch (Exception e) {
